@@ -118,3 +118,13 @@ func RevertSnapshot(vmName, snapshotName string) {
 	fmt.Println("Reverted to snapshot:", snapshotName, "for VM:", vmName)
 	fmt.Println(string(output))
 }
+
+func DeleteSnapshot(vmName, snapshotName string) {
+	cmd := exec.Command("virsh", "snapshot-delete", vmName, snapshotName)
+	output, err := cmd.Output()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Deleted snapshot:", snapshotName, "for VM:", vmName)
+	fmt.Println(string(output))
+}

@@ -26,6 +26,7 @@ func main() {
 		fmt.Println("6. Get info about a specific snapshot")
 		fmt.Println("7. Get snapshot size")
 		fmt.Println("8. Revert snapshot")
+		fmt.Println("9. Delete snapshot")
 		fmt.Println("===========================")
 
 		var choice int
@@ -85,6 +86,15 @@ func main() {
 			fmt.Scan(&snapshotName)
 			fmt.Println("Reverting snapshot:", snapshotName, "for VM:", vmName)
 			utils.RevertSnapshot(vmName, snapshotName)
+			return
+		case 9:
+			var vmName, snapshotName string
+			fmt.Print("Enter VM name to delete snapshot: ")
+			fmt.Scan(&vmName)
+			fmt.Print("Enter snapshot name to delete: ")
+			fmt.Scan(&snapshotName)
+			fmt.Println("Deleting snapshot:", snapshotName, "for VM:", vmName)
+			utils.DeleteSnapshot(vmName, snapshotName)
 			return
 		default:
 			fmt.Println("Invalid choice, please try again.")
