@@ -6,6 +6,53 @@ import (
 	"strings"
 )
 
+// Show info snapshot: name, size, created
+func ShowSnapshotsInfo(vmName string) {
+	cmd := exec.Command("virsh", "snapshot-list", vmName)
+	output, err := cmd.Output()
+	if err != nil {
+		panic(err)
+	}
+	lines := strings.Split(strings.TrimSpace(string(output)), "\n")
+	if len(lines) < 3 {
+		fmt.Println("No snapshots found for VM", vmName)
+		return
+	}
+	fmt.Printf("%-20s %-10s %-25s\n", "Name", "Size", "Created")
+	for _, line := range lines[2:] { // Skip header
+		fields := strings.Fields(line)
+		if len(fields) < 3 {
+			continue
+		}
+		name := fields[0]
+		created := fields[2]
+
+		// Get disk path for VM
+		diskCmd := exec.Command("virsh", "domblklist", vmName)
+		diskOut, err := diskCmd.Output()
+		size := "-"
+		if err == nil {
+			diskLines := strings.Split(strings.TrimSpace(string(diskOut)), "\n")
+			for _, diskLine := range diskLines[2:] { // Skip header
+				diskFields := strings.Fields(diskLine)
+				if len(diskFields) == 2 {
+					diskPath := diskFields[1]
+					duCmd := exec.Command("du", "-h", diskPath)
+					duOut, err := duCmd.Output()
+					if err == nil {
+						duFields := strings.Fields(string(duOut))
+						if len(duFields) > 0 {
+							size = duFields[0]
+						}
+					}
+					break // Only show first disk size
+				}
+			}
+		}
+		fmt.Printf("%-20s %-10s %-25s\n", name, size, created)
+	}
+}
+
 func CreateSnapshot(vmName, snapshotName string) {
 	cmd := exec.Command("virsh", "snapshot-create-as", vmName, snapshotName)
 	output, err := cmd.Output()
@@ -71,4 +118,3 @@ func RevertSnapshot(vmName, snapshotName string) {
 	fmt.Println("Reverted to snapshot:", snapshotName, "for VM:", vmName)
 	fmt.Println(string(output))
 }
-	

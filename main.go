@@ -62,13 +62,13 @@ func main() {
 			utils.CreateSnapshot(vmName, snapshotName)
 			return
 		case 6:
-			var vmName, snapshotName string
+			var vmName string
 			fmt.Print("Enter VM name to get snapshot info: ")
 			fmt.Scan(&vmName)
-			fmt.Print("Enter snapshot name: ")
-			fmt.Scan(&snapshotName)
-			fmt.Println("Getting info about snapshot:", snapshotName, "for VM:", vmName)
-			utils.GetInfoAboutSpecificSnapshot(vmName, snapshotName)
+			// fmt.Print("Enter snapshot name: ")
+			// fmt.Scan(&snapshotName)
+			// fmt.Println("Getting info about snapshot:", snapshotName, "for VM:", vmName)
+			utils.ShowSnapshotsInfo(vmName)
 			return
 		case 7:
 			var vmName string
